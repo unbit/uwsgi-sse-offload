@@ -228,3 +228,11 @@ route = ^/foobar sseraw:server=127.0.0.1:4040,subscribe=foobar
 
 Tips&Tricks
 ===========
+
+Remember your app can publish messages to redis too, so you can implement realtime notifications pretty easily.
+
+Some example:
+
+* add a signal to a Django "News" model that publish to redis every time a new item is added (so connected peers will be notified of latest news in real time)
+* albeit sse can only receive data, you can make ajax requests in your html page triggering a redis publish. In this way you have an almost full-duplex communication (sync for posting, async for receiving). Building a chat with this approach will be really easy (and cheap)
+* do not limit yourself to a single channel, use multiple redis channels for multiple purposes
