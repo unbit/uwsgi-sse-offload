@@ -148,3 +148,17 @@ offload-threads = 1
 ```
 
 the 'final-route-if-not' rule tells the engine to run the 'sse' action if the X-SSE-OFFLOAD variable is not empty, passing its content as the sse action argument.
+
+The sse engine is 'smart' about response headers, so you are free to generate them from your app without damaging the stream:
+
+```python
+import uwsgi
+def application(environ, start_response):
+    if environ['PATH_INFO'] == '/whattimeisit':
+        uwsgi.add_var('X-SSE-OFFLOAD', 'clock')
+        start_response('200 OK', [('Content-Type', 'event/stream'), ('Cache-Control', 'no-cache'), ('Foo', 'Bar')])
+        return []
+    else:
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return ['Hello World']
+```
