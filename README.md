@@ -96,7 +96,7 @@ plugin = sse_offload
 http-socket = :9090
 ; run clock.pl as a mule
 mule = clock.pl
-; map requests to / to the html file
+; map requests to /clock to the html file
 static-map = /clock=clock.html
 ; route requests to ^/whattimeisit to the sse engine subscribed to the 'clock' redis channel
 route = ^/whattimeisit sse:clock
@@ -137,8 +137,8 @@ plugin = sse_offload
 http-socket = :9090
 ; run clock.pl as a mule
 mule = clock.pl
-; map requests to / to the html file
-static-map = /=clock.html
+; map requests to /clock to the html file
+static-map = /clock=clock.html
 
 ; load the wsgi app
 wsgi-file = clock.py
