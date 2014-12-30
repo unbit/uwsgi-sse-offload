@@ -186,14 +186,45 @@ this will connect to the redis server 127.0.0.1:4040 subscribing to the channel 
 
 The folowing keys are available:
 
-* server (the redis server address, unix sockets are supported too)
-* subscribe (the channel to subscribe to)
-* buffer_size (the buffer size for the response, default 4k, tune it only if you need to stream big messages for which having a bigger buffer could result in better performance)
+* `server` (the redis server address, unix sockets are supported too)
+* `subscribe` (the channel to subscribe to)
+* `buffer_size` (the buffer size for the response, default 4k, tune it only if you need to stream big messages for which having a bigger buffer could result in better performance)
 
 
 The 'raw' mode
 ==============
 
+The 'sse' action, takes every message from the redis channel and 'convert' it to sse format:
+
+```
+foobar
+```
+
+become
+
+```
+data: foobar\n\n
+```
+
+the 'converter' take rid of multiline messages too:
+
+```
+foobar\n
+foobar2
+```
+
+is converted to
+
+```
+data: foobar\n
+data: foobar2\n\n
+```
+
+If you want to disable this convertion and directly stream out the content of the redis message as-is, use the sseraw action:
+
+```ini
+route = ^/foobar sseraw:server=127.0.0.1:4040,subscribe=foobar
+```
 
 Tips&Tricks
 ===========
