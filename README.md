@@ -178,7 +178,7 @@ Action parameters
 
 The 'sse' routing action takes a single parameter (the redis channel) or a keyval list:
 
-```
+```ini
 route = ^/foobar sse:server=127.0.0.1:4040,subscribe=foobar
 ```
 
