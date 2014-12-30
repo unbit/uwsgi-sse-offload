@@ -97,12 +97,14 @@ http-socket = :9090
 ; run clock.pl as a mule
 mule = clock.pl
 ; map requests to / to the html file
-static-map = /=clock.html
+static-map = /clock=clock.html
 ; route requests to ^/whattimeisit to the sse engine subscribed to the 'clock' redis channel
 route = ^/whattimeisit sse:clock
 ; enable 1 offload thread
 offload-threads = 1
 ```
+
+open http://127.0.0.1:9090/clock (or whatever url the instance is bound) and (if all goes well) start seeing the unix time
 
 Usage (app-governed)
 ====================
