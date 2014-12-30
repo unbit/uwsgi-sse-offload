@@ -48,7 +48,7 @@ UWSGI_EMBED_PLUGINS="sse_offload=https://github.com/unbit/uwsgi-sse-offload" pip
 Usage (via internal routing)
 ============================
 
-Let's start with a simple perl clock. A perl script will publish in the 'clock' redis channel the current unix time (seconds since the epoch):
+Let's start with a simple perl clock (so ensure your uWSGI instance has the perl/psgi plugin loaded or embedded). A perl script will publish in the 'clock' redis channel the current unix time (seconds since the epoch):
 
 ```perl
 use Redis;
