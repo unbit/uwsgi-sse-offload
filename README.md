@@ -118,5 +118,32 @@ def application(environ, start_response):
         uwsgi.add_var('X-SSE-OFFLOAD', 'clock')
         return []
     else:
-        ...
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return ['Hello World']
 ```
+
+(save it as clock.py)
+
+so when the PATH_INFO is '/whattimeisit', your app set the X-SSE-OFFLOAD variable to the name of the channel to subscribe. Now let's configure uWSGI to honour this variable:
+
+```ini
+[uwsgi]
+; eventually use absolue path for the plugin if it is not in the current directory
+plugin = sse_offload
+; bind on http port 9090
+http-socket = :9090
+; run clock.pl as a mule
+mule = clock.pl
+; map requests to / to the html file
+static-map = /=clock.html
+
+; load the wsgi app
+wsgi-file = clock.py
+
+; tell the routing engine to check for X-SSE-OFFLOAD variable
+response-route-if-not = empty:${X-SSE-OFFLOAD} sse:${X-SSE-OFFLOAD}
+; enable 1 offload thread
+offload-threads = 1
+```
+
+the 'response-route-if-not' rule tells the engine to run the 'sse' action if the X-SSE-OFFLOAD variable is not empty, passing its content as the sse action argument.
