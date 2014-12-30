@@ -109,7 +109,7 @@ Usage (app-governed)
 
 If you want to hold control over the sse url (for example for managing authentication and authorization) you can pass control of the sse url to your app and (after having done your checks) pass back the control to the offload engine.
 
-There are various ways to accomplish this, the easiest is using uWSGI request vars (this time we use python):
+There are various ways to accomplish this, the easiest is using uWSGI request vars (this time we use python, so ensure to load the python plugin too if not available in your binary):
 
 ```python
 import uwsgi
@@ -128,6 +128,7 @@ so when the PATH_INFO is '/whattimeisit', your app set the X-SSE-OFFLOAD variabl
 
 ```ini
 [uwsgi]
+plugin = python
 ; eventually use absolue path for the plugin if it is not in the current directory
 plugin = sse_offload
 ; bind on http port 9090
@@ -141,9 +142,9 @@ static-map = /=clock.html
 wsgi-file = clock.py
 
 ; tell the routing engine to check for X-SSE-OFFLOAD variable
-response-route-if-not = empty:${X-SSE-OFFLOAD} sse:${X-SSE-OFFLOAD}
+final-route-if-not = empty:${X-SSE-OFFLOAD} sse:${X-SSE-OFFLOAD}
 ; enable 1 offload thread
 offload-threads = 1
 ```
 
-the 'response-route-if-not' rule tells the engine to run the 'sse' action if the X-SSE-OFFLOAD variable is not empty, passing its content as the sse action argument.
+the 'final-route-if-not' rule tells the engine to run the 'sse' action if the X-SSE-OFFLOAD variable is not empty, passing its content as the sse action argument.
