@@ -162,3 +162,13 @@ def application(environ, start_response):
         start_response('200 OK', [('Content-Type', 'text/plain')])
         return ['Hello World']
 ```
+
+or with Django:
+
+```python
+def sse_view(request, foobar):
+    response = HttpResponse('', content_type='event/stream')
+    response['Cache-Control'] = 'no-cache'
+    uwsgi.add_var('X-SSE-OFFLOAD', 'clock')
+    return response
+```
