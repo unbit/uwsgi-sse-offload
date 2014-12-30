@@ -106,3 +106,17 @@ offload-threads = 1
 
 Usage (app-governed)
 ====================
+
+If you want to hold control over the sse url (for example for managing authentication and authorization) you can pass control of the sse url to your app and (after having done your checks) pass back the control to the offload engine.
+
+There are various ways to accomplish this, the easiest is using uWSGI request vars (this time we use python):
+
+```python
+import uwsgi
+def application(environ, start_response):
+    if environ['PATH_INFO'] == '/whattimeisit':
+        uwsgi.add_var('X-SSE-OFFLOAD', 'clock')
+        return []
+    else:
+        ...
+```
