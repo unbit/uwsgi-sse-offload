@@ -172,3 +172,28 @@ def sse_view(request, foobar):
     uwsgi.add_var('X-SSE-OFFLOAD', 'clock')
     return response
 ```
+
+Action parameters
+=================
+
+The 'sse' routing action takes a single parameter (the redis channel) or a keyval list:
+
+```
+route = ^/foobar sse:server=127.0.0.1:4040,subscribe=foobar
+```
+
+this will connect to the redis server 127.0.0.1:4040 subscribing to the channel 'foobar'
+
+The folowing keys are available:
+
+* server (the redis server address, unix sockets are supported too)
+* subscribe (the channel to subscribe to)
+* buffer_size (the buffer size for the response, default 4k, tune it only if you need to stream big messages for which having a bigger buffer could result in better performance)
+
+
+The 'raw' mode
+==============
+
+
+Tips&Tricks
+===========
