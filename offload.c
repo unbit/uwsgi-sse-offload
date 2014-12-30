@@ -210,7 +210,7 @@ static ssize_t _redis_pubsub(char *buf, size_t len, int64_t *n, char **str) {
 	return ptr - buf;
 }
 
-char *sse_build(char *message, int64_t message_len, uint64_t *final_len) {
+static char *sse_build(char *message, int64_t message_len, uint64_t *final_len) {
         int64_t i;
         struct uwsgi_buffer *ub = uwsgi_buffer_new(message_len);
         char *ptr = message;
