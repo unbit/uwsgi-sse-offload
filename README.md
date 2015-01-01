@@ -175,6 +175,56 @@ def sse_view(request, foobar):
     return response
 ```
 
+Using --collect-header and --pull-header
+========================================
+
+--collect-header is a uWSGI option for mapping a response header to a request variable automatically:
+
+```ini
+[uwsgi]
+; this will place the value of Content-Type in RESPONSE_TYPE variable
+collect-header = Content-Type RESPONSE_TYPE
+...
+```
+
+In this way we can avoid the use of uwsgi.add_var() api function and automatically detect SSE responses to offload:
+
+```ini
+[uwsgi]
+; this will place the value of Content-Type in RESPONSE_TYPE variable
+collect-header = Content-Type RESPONSE_TYPE
+; route to sse offload engine if RESPONSE_TYPE is event/stream
+final-route-if = equal:${RESPONSE_TYPE};event/stream sse:channel
+...
+```
+
+You can eventually pass to name of the channel via response headers too (again a Django example):
+
+```python
+def sse_view(request, foobar):
+    response = HttpResponse('', content_type='event/stream')
+    response['Cache-Control'] = 'no-cache'
+    response['X-SSE-Channel'] = 'foobar'
+    return response
+```
+
+```ini
+[uwsgi]
+; this will place the value of Content-Type in RESPONSE_TYPE variable
+collect-header = Content-Type RESPONSE_TYPE
+collect-header = X-SSE-Channel X_SSE_CHANNEL
+; route to sse offload engine if RESPONSE_TYPE is event/stream
+final-route-if = equal:${RESPONSE_TYPE};event/stream sse:${X_SSE_CHANNEL}
+...
+```
+
+this will work but the X-SSE-Channel response headers will be sent to the client too and you could not want it.
+
+For solving it, you can use the --pull-header option, that works like --collect-header but do not send the specific header to the client (read: it only maps it to a request variable)
+
+Note: --pull-header has been in added in uWSGI 2.0.9
+
+
 Action parameters
 =================
 
