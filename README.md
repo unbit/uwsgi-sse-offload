@@ -224,6 +224,16 @@ For solving it, you can use the --pull-header option, that works like --collect-
 
 Note: --pull-header has been in added in uWSGI 2.0.9
 
+```ini
+[uwsgi]
+; this will place the value of Content-Type in RESPONSE_TYPE variable
+collect-header = Content-Type RESPONSE_TYPE
+pull-header = X-SSE-Channel X_SSE_CHANNEL
+; route to sse offload engine if RESPONSE_TYPE is event/stream
+final-route-if = equal:${RESPONSE_TYPE};event/stream sse:${X_SSE_CHANNEL}
+...
+```
+
 
 Action parameters
 =================
